@@ -14,6 +14,8 @@ public class Task2 {//не работат
      @param args Параметры командной строки
      */
     public static void main(String[] args) {
+        System.out.println(java.util.Arrays.toString("dsf dfds\n45".split("\\s*(\\r\\n|\\s)")));
+
         int num = Integer.parseInt(readInputData("INPUT.txt"));
         int sum = arithmeticalProgessionSum(num);
         writeOutputData("OUTPUT.txt",sum + "");
