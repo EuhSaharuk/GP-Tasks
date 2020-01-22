@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.nio.file.*;
 
 /**
  * Класс решающий задачу поиска пути в трёхмерном лабиринте
@@ -17,9 +18,15 @@ public class Task99 {
      * ответ выводится ответ в файл
      @param args Параметры командной строки
      */
-    public static void main(String[] args) {
-        String input = readInputData("INPUT.txt");
-        String output = princeOfPersia(input);
+    public static void main(String[] args) throws IOException{
+        //Path file = Paths.get("INPUT.txt");
+        //List<String> lines = Files.readAllLines(file);
+        //String s = String.join(" ",lines);
+        String s2 = String.join(" ",Files.lines(Paths.get("INPUT.txt")).toArray(String[]::new));
+        //String input = Files.lines(Paths.get("INPUT.txt")).toString();
+
+        //        readInputData("INPUT.txt");
+        String output = princeOfPersia(s2);
         writeOutputData("OUTPUT.txt",output);
     }
 
@@ -30,11 +37,11 @@ public class Task99 {
      */
     public static String princeOfPersia(String inputData){
         String[] input = inputData.split("\\s*(\\r\\n|\\s)");
-        int h = Integer.parseInt(input[0]);
-        int m = Integer.parseInt(input[1]);
-        int n = Integer.parseInt(input[2]);
+        byte h = Byte.parseByte(input[0]);
+        byte m = Byte.parseByte(input[1]);
+        byte n = Byte.parseByte(input[2]);
         char[][][] grid = new char[h][m][n];
-        int[] start = new int[3], end = new int[3];
+        byte[] start = new byte[3], end = new byte[3];
         boolean findStrar = false, findEnd =false;
         for(int i = 0; i < h; i++){
             for(int j = 0; j < m; j++){
@@ -44,16 +51,18 @@ public class Task99 {
                 if(i==0 && !findStrar){
                     for(int p =0; p < n; p++){
                         if(grid[i][j][p]=='1') {
-                            start = new int[]{i,j,p};
+                            start = new byte[]{(byte)i,(byte)j,(byte)p};
                             findStrar = true;
+                            break;
                         }
                     }
                 }
                 if(i==h-1 && !findEnd){
                     for(int p =0; p < n; p++){
                         if(grid[i][j][p]=='2') {
-                            end = new int[]{i,j,p};
+                            end = new byte[]{(byte)i,(byte)j,(byte)p};
                             findEnd = true;
+                            break;
                         }
                     }
                 }
@@ -69,13 +78,13 @@ public class Task99 {
      * @param end Конечная точка (координаты принцессы)
      * @return Время необходдимое принцу
      */
-    private static int wideSearch(char[][][] grid, int[] start, int[] end){
+    private static int wideSearch(char[][][] grid, byte[] start, byte[] end){
         ArrayList<Cell> was = new ArrayList<>();
         int time;
-        was.add(new Cell(start,0));
+        was.add(new Cell(start,(short)0));
         int counter =0;
         while (!Arrays.equals(was.get(counter).pos,end)){
-            addNeighbours(grid, was.get(counter).pos, was, was.get(counter).val+1);
+            addNeighbours(grid, was.get(counter).pos, was, (short)(was.get(counter).val+1));
             counter++;
         }
         time = was.get(counter).val * 5;
@@ -89,36 +98,31 @@ public class Task99 {
      * @param was Очередь для рассмотрения
      * @param step Путь до соседних ячеек от старта
      */
-    private static void addNeighbours(char[][][] grid, int[] pos, List<Cell> was, int step){
+    private static void addNeighbours(char[][][] grid, byte[] pos, List<Cell> was, short step){
         Cell newNei;
         if(pos[0]<grid.length-1 && grid[pos[0]+1][pos[1]][pos[2]]!='o'){
-            newNei = new Cell(new int[]{pos[0]+1,pos[1],pos[2]},step);
-            if(!was.contains(newNei))
-                was.add(newNei);
+            grid[pos[0]+1][pos[1]][pos[2]] = 'o';
+            was.add(new Cell(new byte[]{(byte)(pos[0]+1),pos[1],pos[2]},step));
         }
 
         if(pos[1]<grid[0].length-1 && grid[pos[0]][pos[1]+1][pos[2]]!='o')
         {
-            newNei = new Cell(new int[]{pos[0],pos[1]+1,pos[2]},step);
-            if(!was.contains(newNei))
-                was.add(newNei);
+            grid[pos[0]][pos[1]+1][pos[2]]='o';
+            was.add(new Cell(new byte[]{pos[0],(byte)(pos[1]+1),pos[2]},step));
         }
 
         if(pos[1]!=0 && grid[pos[0]][pos[1]-1][pos[2]]!='o'){
-            newNei = new Cell(new int[]{pos[0],pos[1]-1,pos[2]},step);
-            if(!was.contains(newNei))
-                was.add(newNei);
+            grid[pos[0]][pos[1]-1][pos[2]]='o';
+            was.add( new Cell(new byte[]{pos[0],(byte)(pos[1]-1),pos[2]},step));
         }
         if(pos[2]<grid[0][0].length-1 && grid[pos[0]][pos[1]][pos[2]+1]!='o'){
-            newNei = new Cell(new int[]{pos[0],pos[1],pos[2]+1},step);
-            if(!was.contains(newNei))
-                was.add(newNei);
+            grid[pos[0]][pos[1]][pos[2]+1]='o';
+            was.add(new Cell(new byte[]{pos[0],pos[1],(byte)(pos[2]+1)},step));
         }
 
         if(pos[2]!=0 && grid[pos[0]][pos[1]][pos[2]-1]!='o'){
-            newNei = new Cell(new int[]{pos[0],pos[1],pos[2]-1},step);
-            if(!was.contains(newNei))
-                was.add(newNei);
+            grid[pos[0]][pos[1]][pos[2]-1]='o';
+            was.add(new Cell(new byte[]{pos[0],pos[1],(byte)(pos[2]-1)},step));
         }
     }
 
@@ -127,30 +131,28 @@ public class Task99 {
      */
     private static class Cell {
         /** Поле координат клетки */
-        int[] pos;
+        byte[] pos;
         /** Поле расстояния до клетки */
-        int val;
+        short val;
 
         /** Конструктор, создпёт новый объект
          * @param pos Координаты клетки
          * @param val Расстояние до клетки
          */
-        Cell(int[] pos, int val){
+        Cell(byte[] pos,short val){
             this.pos = pos;
             this.val = val;
         }
-
+        /*
         @Override
         public boolean equals(Object obj) {
-            if(obj != null && obj instanceof Cell){
-                return Arrays.equals(this.pos, ((Cell) obj).pos);
-            }else return false;
+            return obj != null && obj instanceof Cell && Arrays.equals(this.pos, ((Cell) obj).pos);
         }
 
         @Override
         public int hashCode() {
             return 29*pos[0] + 31*pos[1] + 37*pos[2];
-        }
+        }*/
     }
 
     /** Метод считывает данные из вайла и возвращает и в формате строки

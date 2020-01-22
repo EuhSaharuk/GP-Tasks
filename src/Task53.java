@@ -17,7 +17,7 @@ public class Task53 {//не работает
      @param args Параметры командной строки
      */
     public static void main(String[] args) {
-        String[] txt = readInputData("INPUT.txt").split(" ");
+        String[] txt = readInputData("INPUT.txt").split("\\s*(\\r\\n|\\s)");
         String output = multTableColoring(Integer.parseInt(txt[0]),Integer.parseInt(txt[1]));
         writeOutputData("OUTPUT.txt", output);
     }
@@ -42,7 +42,7 @@ public class Task53 {//не работает
         }
         black = m*n - blue - green - red;
 
-        return "RED "+ red+"\nGREEN "+ green+"\nBLUE "+ blue+"\nBLACK "+ black;
+        return "RED : "+ red+"\nGREEN : "+ green+"\nBLUE : "+ blue+"\nBLACK : "+ black;
     }
 
     /** Метод считывает данные из вайла и возвращает и в формате строки

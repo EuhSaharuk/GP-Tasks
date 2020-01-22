@@ -45,7 +45,7 @@ public class Task58 {//не работает
                 }
             }
             if(isCuteMatrix(arr)) output.append("YES\n");
-            else output.append("No\n");
+            else output.append("NO\n");
         }
         output.deleteCharAt(output.length()-1);
         return output.toString();
@@ -58,9 +58,9 @@ public class Task58 {//не работает
      */
     private static boolean isCuteMatrix(int[][] matrix){
 
-        for (int i = 0; i < matrix.length-2;i++)
+        for (int i = 0; i < matrix.length-1;i++)
         {
-            for(int j = 0; j < matrix[0].length -2; j++)
+            for(int j = 0; j < matrix[0].length -1; j++)
             {
                 int sum = matrix[i][j]+ matrix[i+1][j]+ matrix[i][j+1]+ matrix[i+1][j+1];
                 if (sum ==0 || sum == 4) return false;

@@ -14,9 +14,9 @@ public class Task2 {//не работат
      @param args Параметры командной строки
      */
     public static void main(String[] args) {
-        System.out.println(java.util.Arrays.toString("dsf dfds\n45".split("\\s*(\\r\\n|\\s)")));
+        //System.out.println(java.util.Arrays.toString("dsf dfds\n".split("\\s*(\\r\\n|\\s)")));
 
-        int num = Integer.parseInt(readInputData("INPUT.txt"));
+        int num = Integer.parseInt(readInputData("INPUT.txt").split("\\s*(\\r\\n|\\s)")[0]);
         int sum = arithmeticalProgessionSum(num);
         writeOutputData("OUTPUT.txt",sum + "");
     }
@@ -25,7 +25,13 @@ public class Task2 {//не работат
      @param n Число до кторого суммиркются числа
      */
     static int arithmeticalProgessionSum(int n) {
-        return (n + 1) * n / 2;
+        if(n > 0)
+            return (n + 1) * n / 2;
+        else{
+            n = Math.abs(n);
+            return ((n + 1) * n / 2)*-1+1;
+        }
+
     }
 
     /** Метод считывает данные из вайла и возвращает и в формате строки
